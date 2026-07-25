@@ -1,0 +1,32 @@
+{
+  "holdings": {
+    "AAPL": {
+      "symbol": "AAPL",
+      "quantity": 10,
+      "cost_basis": 150.50,
+      "current_price": 189.95,
+      "last_updated": "2024-01-15"
+    },
+    "MSFT": {
+      "symbol": "MSFT",
+      "quantity": 25,
+      "cost_basis": 250.00,
+      "current_price": 334.20,
+      "last_updated": "2024-01-15"
+    },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "quantity": 5,
+      "cost_basis": 2800.00,
+      "current_price": 2950.00,
+      "last_updated": "2024-01-15"
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "quantity": 3,
+      "cost_basis": 245.00,
+      "current_price": 265.30,
+      "last_updated": "2024-01-15"
+    }
+  }
+}
