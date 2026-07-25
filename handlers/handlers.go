@@ -5,15 +5,33 @@ import (
 	"FinTerminal/portfolio"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Handlers struct {
-	apiKey        string
-	client        *api.AlphaVantageClient
+	client        APIClient  
 	portfolioPath string
+	isDemoMode    bool
+}
+
+type APIClient interface {
+	GetQuote(symbol string) (*api.QuoteData, error)
 }
 
 func NewHandlers(apiKey string) *Handlers {
+	var client APIClient
+	isDemoMode := false
+
+	// Check if API key is provided and not "demo"
+	if apiKey == "" || strings.ToLower(apiKey) == "demo" {
+		// Use mock client
+		client = api.NewMockClient()
+		isDemoMode = true
+	} else {
+		// Use real Alpha Vantage client
+		client = api.NewAlphaVantageClient(apiKey)
+	}
+
 	portfolioPath := os.Getenv("FINTERMINAL_PORTFOLIO_PATH")
 	if portfolioPath == "" {
 		homeDir, _ := os.UserHomeDir()
@@ -21,9 +39,9 @@ func NewHandlers(apiKey string) *Handlers {
 	}
 
 	return &Handlers{
-		apiKey:        apiKey,
-		client:        api.NewAlphaVantageClient(apiKey),
+		client:        client,
 		portfolioPath: portfolioPath,
+		isDemoMode:    isDemoMode,
 	}
 }
 

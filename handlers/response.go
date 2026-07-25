@@ -31,6 +31,26 @@ func (h *Handlers) sendSuccess(w http.ResponseWriter, statusCode int, data inter
 	})
 }
 
+func (h *Handlers) HandleStatus(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.sendError(w, http.StatusMethodNotAllowed, "Method not allowed")
+		return
+	}
+
+	mode := "production"
+	if h.isDemoMode {
+		mode = "demo"
+	}
+
+	response := map[string]string{
+		"status": "ok",
+		"mode":   mode,
+		"message": "FinTerminal API is running",
+	}
+
+	h.sendSuccess(w, http.StatusOK, response)
+}
+
 type PortfolioResponse struct {
 	Holdings        []HoldingResponse `json:"holdings"`
 	TotalCost       float64          `json:"total_cost"`
