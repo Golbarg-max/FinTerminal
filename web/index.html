@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>FinTerminal - Portfolio Tracker</title>
+	<link rel="stylesheet" href="/style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<!-- Header -->
+		<header class="header">
+			<div class="header-content">
+				<h1 class="header-title">FinTerminal</h1>
+				<p class="header-subtitle">Portfolio Performance Tracker</p>
+			</div>
+			<button class="btn btn-refresh" onclick="refreshPrices()">
+				<span class="icon">🔄</span> Refresh
+			</button>
+		</header>
+
+		<!-- Main Content -->
+		<main class="main">
+			<!-- Portfolio Summary -->
+			<section class="summary-section">
+				<div class="summary-grid">
+					<div class="summary-card">
+						<div class="summary-label">Total Invested</div>
+						<div class="summary-value" id="totalCost">$0.00</div>
+					</div>
+					<div class="summary-card">
+						<div class="summary-label">Current Value</div>
+						<div class="summary-value" id="totalValue">$0.00</div>
+					</div>
+					<div class="summary-card highlight">
+						<div class="summary-label">Total Gain/Loss</div>
+						<div class="summary-value gain-loss" id="totalGainLoss">$0.00</div>
+					</div>
+					<div class="summary-card highlight">
+						<div class="summary-label">Return %</div>
+						<div class="summary-value gain-loss" id="gainLossPercent">0.00%</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Charts Section -->
+			<section class="charts-section">
+				<div class="charts-grid">
+					<!-- Allocation Pie Chart -->
+					<div class="chart-card">
+						<h3 class="chart-title">Portfolio Allocation</h3>
+						<div class="chart-container">
+							<canvas id="allocationChart"></canvas>
+						</div>
+					</div>
+
+					<!-- Gains/Losses -->
+					<div class="chart-card">
+						<h3 class="chart-title">Gains & Losses</h3>
+						<div class="chart-container">
+							<canvas id="gainsLossesChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Tabs -->
+			<div class="tabs-container">
+				<div class="tabs">
+					<button class="tab-btn active" onclick="showTab('portfolio')">
+						<span class="tab-icon">📊</span> Portfolio
+					</button>
+					<button class="tab-btn" onclick="showTab('quote')">
+						<span class="tab-icon">🔍</span> Quote Search
+					</button>
+					<button class="tab-btn" onclick="showTab('add')">
+						<span class="tab-icon">➕</span> Add Holding
+					</button>
+				</div>
+			</div>
+
+			<!-- Portfolio Tab -->
+			<section id="portfolio-tab" class="tab-content active">
+				<div class="section-header">
+					<h2>Holdings</h2>
+				</div>
+				<div id="loading" class="loading">
+					<div class="spinner"></div>
+					<p>Loading portfolio...</p>
+				</div>
+				<div class="table-wrapper">
+					<table id="portfolioTable" class="table">
+						<thead>
+							<tr>
+								<th>Symbol</th>
+								<th>Shares</th>
+								<th>Cost/Share</th>
+								<th>Current</th>
+								<th>Total Cost</th>
+								<th>Current Value</th>
+								<th>Gain/Loss</th>
+								<th>Return %</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody id="holdingsBody">
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<!-- Quote Tab -->
+			<section id="quote-tab" class="tab-content">
+				<div class="section-header">
+					<h2>Stock Quote</h2>
+				</div>
+				<div class="search-box">
+					<input 
+						type="text" 
+						id="quoteSymbol" 
+						placeholder="Enter symbol (e.g., AAPL)" 
+						class="input"
+						onkeypress="if(event.key === 'Enter') searchQuote()"
+					>
+					<button class="btn btn-primary" onclick="searchQuote()">Search</button>
+				</div>
+				<div id="quoteResult" class="quote-result"></div>
+			</section>
+
+			<!-- Add Holding Tab -->
+			<section id="add-tab" class="tab-content">
+				<div class="section-header">
+					<h2>Add Holding</h2>
+				</div>
+				<form onsubmit="addHolding(event)" class="form">
+					<div class="form-group">
+						<label class="form-label">Symbol</label>
+						<input type="text" id="addSymbol" placeholder="e.g., AAPL" class="input" required>
+					</div>
+					<div class="form-group">
+						<label class="form-label">Quantity</label>
+						<input type="number" id="addQuantity" placeholder="e.g., 10" step="0.01" class="input" required>
+					</div>
+					<div class="form-group">
+						<label class="form-label">Cost Per Share</label>
+						<input type="number" id="addCostBasis" placeholder="e.g., 150.50" step="0.01" class="input" required>
+					</div>
+					<button type="submit" class="btn btn-primary btn-large">Add Holding</button>
+				</form>
+			</section>
+		</main>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<p class="footer-text">FinTerminal © 2024 | Portfolio Tracker</p>
+		</footer>
+	</div>
+
+	<!-- Toast Notification -->
+	<div id="toast" class="toast"></div>
+
+	<script src="/api.js"></script>
+	<script src="/app.js"></script>
+</body>
+</html>
