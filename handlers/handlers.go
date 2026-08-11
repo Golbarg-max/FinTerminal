@@ -45,6 +45,12 @@ func NewHandlers(apiKey string) *Handlers {
 	}
 }
 
+// IsDemoMode reports whether the mock quote client is in use.
+func (h *Handlers) IsDemoMode() bool { return h.isDemoMode }
+
+// PortfolioPath is the file the portfolio is read from and written to.
+func (h *Handlers) PortfolioPath() string { return h.portfolioPath }
+
 func (h *Handlers) loadPortfolio() (*portfolio.Portfolio, error) {
 	p := portfolio.NewPortfolio()
 	if err := p.LoadFromFile(h.portfolioPath); err != nil {
