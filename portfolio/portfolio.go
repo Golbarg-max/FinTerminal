@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -106,6 +107,7 @@ func (p *Portfolio) SaveToFile() error {
 }
 
 func (p *Portfolio) AddHolding(symbol string, quantity float64, costBasis float64) error {
+	symbol = strings.ToUpper(strings.TrimSpace(symbol))
 	if symbol == "" {
 		return fmt.Errorf("symbol cannot be empty")
 	}
@@ -131,6 +133,7 @@ func (p *Portfolio) AddHolding(symbol string, quantity float64, costBasis float6
 }
 
 func (p *Portfolio) UpdatePrice(symbol string, currentPrice float64) error {
+	symbol = strings.ToUpper(strings.TrimSpace(symbol))
 	if symbol == "" {
 		return fmt.Errorf("symbol cannot be empty")
 	}
@@ -150,6 +153,7 @@ func (p *Portfolio) UpdatePrice(symbol string, currentPrice float64) error {
 }
 
 func (p *Portfolio) RemoveHolding(symbol string) error {
+	symbol = strings.ToUpper(strings.TrimSpace(symbol))
 	if symbol == "" {
 		return fmt.Errorf("symbol cannot be empty")
 	}
@@ -171,6 +175,7 @@ func (p *Portfolio) GetSymbols() []string {
 }
 
 func (p *Portfolio) GetHolding(symbol string) (*Holding, error) {
+	symbol = strings.ToUpper(strings.TrimSpace(symbol))
 	if symbol == "" {
 		return nil, fmt.Errorf("symbol cannot be empty")
 	}

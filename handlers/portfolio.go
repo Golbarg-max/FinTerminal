@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 )
 
 func (h *Handlers) HandlePortfolio(w http.ResponseWriter, r *http.Request) {
@@ -87,10 +86,6 @@ func (h *Handlers) addHolding(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Symbols are normalized here so the portfolio map has one key per symbol
-	// regardless of how the caller typed it.
-	req.Symbol = strings.ToUpper(strings.TrimSpace(req.Symbol))
-
 	p, err := h.loadPortfolio()
 	if err != nil {
 		h.sendError(w, http.StatusInternalServerError, "Failed to load portfolio")
@@ -122,8 +117,6 @@ func (h *Handlers) removeHolding(w http.ResponseWriter, r *http.Request) {
 			symbol = req.Symbol
 		}
 	}
-
-	symbol = strings.ToUpper(strings.TrimSpace(symbol))
 	if symbol == "" {
 		h.sendError(w, http.StatusBadRequest, "Symbol is required")
 		return
