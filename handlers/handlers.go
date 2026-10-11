@@ -9,7 +9,7 @@ import (
 )
 
 type Handlers struct {
-	client        APIClient  
+	client        APIClient
 	portfolioPath string
 	isDemoMode    bool
 }

@@ -1,15 +1,15 @@
 package portfolio
 
 type PerformanceMetrics struct {
-	Symbol              string
-	Quantity            float64
-	CostPerShare        float64
-	CurrentPrice        float64
-	TotalCost           float64
-	CurrentValue        float64
-	GainLoss            float64
-	GainLossPercent     float64
-	ReturnOnInvestment  float64
+	Symbol             string
+	Quantity           float64
+	CostPerShare       float64
+	CurrentPrice       float64
+	TotalCost          float64
+	CurrentValue       float64
+	GainLoss           float64
+	GainLossPercent    float64
+	ReturnOnInvestment float64
 }
 
 func (p *Portfolio) CalculatePerformance() []PerformanceMetrics {

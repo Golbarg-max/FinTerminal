@@ -43,8 +43,8 @@ func (h *Handlers) HandleStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := map[string]string{
-		"status": "ok",
-		"mode":   mode,
+		"status":  "ok",
+		"mode":    mode,
 		"message": "FinTerminal API is running",
 	}
 
@@ -53,10 +53,10 @@ func (h *Handlers) HandleStatus(w http.ResponseWriter, r *http.Request) {
 
 type PortfolioResponse struct {
 	Holdings        []HoldingResponse `json:"holdings"`
-	TotalCost       float64          `json:"total_cost"`
-	TotalValue      float64          `json:"total_value"`
-	TotalGainLoss   float64          `json:"total_gain_loss"`
-	GainLossPercent float64          `json:"gain_loss_percent"`
+	TotalCost       float64           `json:"total_cost"`
+	TotalValue      float64           `json:"total_value"`
+	TotalGainLoss   float64           `json:"total_gain_loss"`
+	GainLossPercent float64           `json:"gain_loss_percent"`
 }
 
 type HoldingResponse struct {

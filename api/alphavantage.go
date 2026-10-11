@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	ErrEmptyAPIKey   = fmt.Errorf("API key cannot be empty")
+	ErrEmptyAPIKey    = fmt.Errorf("API key cannot be empty")
 	ErrSymbolNotFound = fmt.Errorf("symbol not found")
-	ErrInvalidPrice  = fmt.Errorf("invalid price data")
-	BaseURL = "https://www.alphavantage.co/query"
+	ErrInvalidPrice   = fmt.Errorf("invalid price data")
+	BaseURL           = "https://www.alphavantage.co/query"
 )
 
 type AlphaVantageClient struct {
@@ -23,12 +23,12 @@ type AlphaVantageClient struct {
 }
 
 type QuoteData struct {
-	Symbol           string
-	Price            float64
-	Change           float64
-	ChangePercent    float64
-	Volume           int64
-	Timestamp        time.Time
+	Symbol        string
+	Price         float64
+	Change        float64
+	ChangePercent float64
+	Volume        int64
+	Timestamp     time.Time
 }
 
 type globalQuoteResponse struct {
@@ -40,8 +40,8 @@ type globalQuoteResponse struct {
 		Volume           string `json:"06. volume"`
 		LatestTradingDay string `json:"07. latest trading day"`
 	} `json:"Global Quote"`
-	Note   string `json:"note"`
-	Error  string `json:"Error Message"`
+	Note  string `json:"note"`
+	Error string `json:"Error Message"`
 }
 
 func NewAlphaVantageClient(apiKey string) *AlphaVantageClient {

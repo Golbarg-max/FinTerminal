@@ -4,8 +4,10 @@ import (
 	"FinTerminal/api"
 	"FinTerminal/portfolio"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -97,12 +99,20 @@ var portfolioAddCmd = &cobra.Command{
 		}
 
 		symbol := args[0]
-		quantity := parseFloat(args[1])
-		costBasis := parseFloat(args[2])
+		quantity, err := parseFloat(args[1])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: invalid quan %q: %v\n", args[1], err)
+			os.Exit(1)
+		}
+		costBasis, err := parseFloat(args[2])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: invalid cost %q: %v\n", args[2], err)
+			os.Exit(1)
+		}
 
 		if err := p.AddHolding(symbol, quantity, costBasis); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: Failed to add holding: %v\n", err)
-   			os.Exit(1)
+			os.Exit(1)
 		}
 		if err := p.SaveToFile(); err != nil {
 			fmt.Println("Error saving portfolio:", err)
@@ -226,10 +236,17 @@ func displayPortfolioTable(p *portfolio.Portfolio) {
 	fmt.Println()
 }
 
-func parseFloat(s string) float64 {
-	var result float64
-	fmt.Sscanf(s, "%f", &result)
-	return result
+func parseFloat(s string) (float64, error) {
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0, err
+	}
+	// ParseFloat accepts "NaN" and "Inf", but they aren't usable amounts:
+	// NaN slips past `<= 0` checks because every comparison with it is false.
+	if math.IsNaN(v) || math.IsInf(v, 0) {
+		return 0, fmt.Errorf("must be a finite number")
+	}
+	return v, nil
 }
 
 func init() {
