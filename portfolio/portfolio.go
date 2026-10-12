@@ -10,8 +10,9 @@ import (
 )
 
 type Holding struct {
-	Symbol       string  `json:"symbol"`
-	Quantity     float64 `json:"quantity"`
+	Symbol   string  `json:"symbol"`
+	Quantity float64 `json:"quantity"`
+	//average cost per share
 	CostBasis    float64 `json:"cost_basis"`
 	CurrentPrice float64 `json:"current_price"`
 	LastUpdated  string  `json:"last_updated"`
@@ -126,6 +127,14 @@ func (p *Portfolio) AddHolding(symbol string, quantity float64, costBasis float6
 
 	if err := holding.Validate(); err != nil {
 		return fmt.Errorf("invalid holding: %w", err)
+	}
+
+	if existing, ok := p.Holdings[symbol]; ok {
+		avgCost := (existing.Quantity*existing.CostBasis + quantity*costBasis) / (existing.Quantity + quantity)
+		existing.CostBasis = avgCost
+		existing.Quantity += quantity
+
+		return nil
 	}
 
 	p.Holdings[symbol] = holding

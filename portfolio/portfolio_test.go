@@ -49,6 +49,24 @@ func TestAddHoldingNegativeCostBasis(t *testing.T) {
 	assert.Contains(t, err.Error(), "cost basis cannot be negative")
 }
 
+func TestAddHoldingMergesExisting(t *testing.T) {
+	p := NewPortfolio()
+
+	require.NoError(t, p.AddHolding("AAPL", 10, 150.00))
+	require.NoError(t, p.UpdatePrice("AAPL", 180.00))
+	require.NoError(t, p.AddHolding("AAPL", 5, 200.00))
+
+	assert.Equal(t, 1, len(p.Holdings))
+
+	holding := p.Holdings["AAPL"]
+	assert.Equal(t, 15.0, holding.Quantity)
+	// Weighted average: (10*150 + 5*200) / 15
+	assert.InDelta(t, 2500.0/15, holding.CostBasis, 0.0001)
+	// Buying more shouldn't wipe the last fetched price
+	assert.Equal(t, 180.00, holding.CurrentPrice)
+	assert.NotEmpty(t, holding.LastUpdated)
+}
+
 func TestAddMultipleHoldings(t *testing.T) {
 	p := NewPortfolio()
 
