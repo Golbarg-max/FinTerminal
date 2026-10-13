@@ -5,7 +5,6 @@ import (
 	"FinTerminal/portfolio"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 )
 
@@ -21,18 +20,8 @@ type APIClient interface {
 }
 
 func NewHandlers(apiKey string) *Handlers {
-	var client APIClient
-	isDemoMode := false
 
-	// Check if API key is provided and not "demo"
-	if apiKey == "" || strings.ToLower(apiKey) == "demo" {
-		// Use mock client
-		client = api.NewMockClient()
-		isDemoMode = true
-	} else {
-		// Use real Alpha Vantage client
-		client = api.NewAlphaVantageClient(apiKey)
-	}
+	client, isDemoMode := api.NewClient(apiKey)
 
 	portfolioPath := os.Getenv("FINTERMINAL_PORTFOLIO_PATH")
 	if portfolioPath == "" {

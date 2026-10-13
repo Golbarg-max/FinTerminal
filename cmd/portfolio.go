@@ -42,18 +42,7 @@ var portfolioCmd = &cobra.Command{
 			return
 		}
 
-		// Get API key
-		if apiKey == "" {
-			apiKey = os.Getenv("ALPHA_VANTAGE_API_KEY")
-		}
-
-		if apiKey == "" {
-			fmt.Println("Error: API key not provided. Set ALPHA_VANTAGE_API_KEY environment variable or use --api-key flag")
-			os.Exit(1)
-		}
-
-		// Fetch current prices
-		client := api.NewAlphaVantageClient(apiKey)
+		client, _ := api.NewClient(apiKey)
 		symbols := p.GetSymbols()
 
 		fmt.Println("\n📊 Fetching latest prices...")

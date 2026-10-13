@@ -17,16 +17,9 @@ var quoteCmd = &cobra.Command{
 	Long:  "Display current market data for one or more stock symbols",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if apiKey == "" {
-			apiKey = os.Getenv("ALPHA_VANTAGE_API_KEY")
-		}
+		
+		client, _ := api.NewClient(apiKey)
 
-		if apiKey == "" {
-			fmt.Println("Error: API key not provided. Set ALPHA_VANTAGE_API_KEY environment variable or use --api-key flag")
-			os.Exit(1)
-		}
-
-		client := api.NewAlphaVantageClient(apiKey)
 
 		// Create table
 		table := tablewriter.NewWriter(os.Stdout)
