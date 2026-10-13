@@ -15,6 +15,9 @@ func (h *Handlers) HandlePortfolio(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) getPortfolio(w http.ResponseWriter, r *http.Request) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	
 	p, err := h.loadPortfolio()
 	if err != nil {
 		h.sendError(w, http.StatusInternalServerError, "Failed to load portfolio: "+err.Error())
@@ -85,6 +88,8 @@ func (h *Handlers) addHolding(w http.ResponseWriter, r *http.Request) {
 		h.sendError(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
 
 	p, err := h.loadPortfolio()
 	if err != nil {
@@ -121,6 +126,8 @@ func (h *Handlers) removeHolding(w http.ResponseWriter, r *http.Request) {
 		h.sendError(w, http.StatusBadRequest, "Symbol is required")
 		return
 	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
 
 	p, err := h.loadPortfolio()
 	if err != nil {
@@ -146,6 +153,8 @@ func (h *Handlers) HandleRefreshPrices(w http.ResponseWriter, r *http.Request) {
 		h.sendError(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
 
 	p, err := h.loadPortfolio()
 	if err != nil {

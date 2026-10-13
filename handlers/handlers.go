@@ -6,12 +6,14 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 type Handlers struct {
 	client        APIClient
 	portfolioPath string
 	isDemoMode    bool
+	mu            sync.Mutex
 }
 
 type APIClient interface {
