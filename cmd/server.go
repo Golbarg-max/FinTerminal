@@ -17,8 +17,6 @@ var serverCmd = &cobra.Command{
 	Short: "Start the FinTerminal web server",
 	Long:  "Start the FinTerminal web server with portfolio and quote endpoints",
 	Run: func(cmd *cobra.Command, args []string) {
-		// No API key is fine: NewHandlers falls back to the mock client (demo mode).
-		apiKey := os.Getenv("ALPHA_VANTAGE_API_KEY")
 
 		// Precedence: --port flag > SERVER_PORT env > default.
 		port, _ := cmd.Flags().GetString("port")

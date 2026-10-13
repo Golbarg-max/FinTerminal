@@ -17,9 +17,11 @@ var quoteCmd = &cobra.Command{
 	Long:  "Display current market data for one or more stock symbols",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		
-		client, _ := api.NewClient(apiKey)
+		client, isDemo := api.NewClient(apiKey)
 
+		if isDemo {
+			fmt.Fprintln(os.Stderr, "DEMO MODE: showing simulated prices")
+		}
 
 		// Create table
 		table := tablewriter.NewWriter(os.Stdout)

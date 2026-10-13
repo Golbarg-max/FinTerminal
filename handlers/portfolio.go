@@ -17,7 +17,7 @@ func (h *Handlers) HandlePortfolio(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) getPortfolio(w http.ResponseWriter, r *http.Request) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	
+
 	p, err := h.loadPortfolio()
 	if err != nil {
 		h.sendError(w, http.StatusInternalServerError, "Failed to load portfolio: "+err.Error())

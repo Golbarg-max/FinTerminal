@@ -42,7 +42,11 @@ var portfolioCmd = &cobra.Command{
 			return
 		}
 
-		client, _ := api.NewClient(apiKey)
+		client, isDemoMode := api.NewClient(apiKey)
+
+		if isDemoMode {
+			fmt.Fprintln(os.Stderr, "DEMO MODE: showing simulated prices")
+		}
 		symbols := p.GetSymbols()
 
 		fmt.Println("\n📊 Fetching latest prices...")
