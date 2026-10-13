@@ -3,6 +3,8 @@ package api
 import (
 	"os"
 	"strings"
+	"sync"
+	"time"
 )
 
 type Client interface {
@@ -25,3 +27,18 @@ func NewClient(apiKey string) (Client, bool) {
 	// Use real Alpha Vantage client
 	return NewAlphaVantageClient(apiKey), false
 }
+
+type CachedClient struct {
+	inner Client          // the real client it delegate
+	ttl   time.Duration   // how long a quote stays fres
+	mu    sync.Mutex
+	cache map[string]cacheEntry
+}
+
+type cacheEntry struct {
+	quote     QuoteData
+	fetchedAt time.Time
+}
+
+func NewCachedClient(inner Client, ttl time.Duration) *CachedClient
+func (c *CachedClient) GetQuote(symbol string) (*QuoteData, error)
