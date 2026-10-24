@@ -62,12 +62,11 @@ func (c *AlphaVantageClient) GetQuote(symbol string) (*QuoteData, error) {
 		return nil, fmt.Errorf("client is nil")
 	}
 
+	// Normalize before validating so blank input like "   " is rejected
+	symbol = NormalizeSymbol(symbol)
 	if symbol == "" {
 		return nil, fmt.Errorf("symbol cannot be empty")
 	}
-
-	// Normalize symbol to uppercase
-	symbol = strings.ToUpper(symbol)
 
 	params := fmt.Sprintf("?function=GLOBAL_QUOTE&symbol=%s&apikey=%s", symbol, c.apiKey)
 	resp, err := c.client.Get(BaseURL + params)

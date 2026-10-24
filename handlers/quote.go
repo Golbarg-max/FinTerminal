@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
+
+	"FinTerminal/api"
 )
 
 func (h *Handlers) HandleQuote(w http.ResponseWriter, r *http.Request) {
@@ -11,7 +12,7 @@ func (h *Handlers) HandleQuote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	symbol := strings.ToUpper(r.URL.Query().Get("symbol"))
+	symbol := api.NormalizeSymbol(r.URL.Query().Get("symbol"))
 	if symbol == "" {
 		h.sendError(w, http.StatusBadRequest, "Symbol is required")
 		return
