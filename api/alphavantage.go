@@ -14,6 +14,7 @@ var (
 	ErrEmptyAPIKey    = fmt.Errorf("API key cannot be empty")
 	ErrSymbolNotFound = fmt.Errorf("symbol not found")
 	ErrInvalidPrice   = fmt.Errorf("invalid price data")
+	ErrRateLimited    = fmt.Errorf("API limit reached")
 	BaseURL           = "https://www.alphavantage.co/query"
 )
 
@@ -40,8 +41,9 @@ type globalQuoteResponse struct {
 		Volume           string `json:"06. volume"`
 		LatestTradingDay string `json:"07. latest trading day"`
 	} `json:"Global Quote"`
-	Note  string `json:"note"`
-	Error string `json:"Error Message"`
+	Information string `json:"Information"`
+	Note        string `json:"note"`
+	Error       string `json:"Error Message"`
 }
 
 func NewAlphaVantageClient(apiKey string) *AlphaVantageClient {
@@ -93,12 +95,15 @@ func (c *AlphaVantageClient) GetQuote(symbol string) (*QuoteData, error) {
 	if result.Note != "" {
 		return nil, fmt.Errorf("API rate limit or error: %s", result.Note)
 	}
+	if result.Information != "" {
+		return nil, fmt.Errorf("%w: %s", ErrRateLimited, result.Information)
+	}
 	if result.Error != "" {
 		return nil, fmt.Errorf("API error: %s", result.Error)
 	}
 
 	if result.GlobalQuote.Symbol == "" {
-		return nil, fmt.Errorf("symbol %s not found in API response", symbol)
+		return nil, fmt.Errorf("%w: %s", ErrSymbolNotFound, symbol)
 	}
 
 	// Parse numeric fields with error handling

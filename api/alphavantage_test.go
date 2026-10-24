@@ -191,6 +191,33 @@ func TestGetQuoteRateLimit(t *testing.T) {
 	assert.Contains(t, err.Error(), "rate limit")
 }
 
+// Alpha Vantage's current daily-limit response: HTTP 200 with an "Information" body.
+func TestGetQuoteInformationRateLimit(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := `{
+			"Information": "Thank you for using Alpha Vantage! Our standard API rate limit is 25 requests per day."
+		}`
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, response)
+	}))
+	defer server.Close()
+
+	client := &AlphaVantageClient{
+		apiKey: "test_key",
+		client: &http.Client{},
+	}
+
+	oldBaseURL := BaseURL
+	BaseURL = server.URL
+	defer func() { BaseURL = oldBaseURL }()
+
+	quote, err := client.GetQuote("AAPL")
+	assert.Nil(t, quote)
+	assert.ErrorIs(t, err, ErrRateLimited)
+	assert.NotErrorIs(t, err, ErrSymbolNotFound)
+	assert.Contains(t, err.Error(), "25 requests per day")
+}
+
 func TestGetQuoteWithChangePercent(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		response := `{

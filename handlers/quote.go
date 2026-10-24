@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"FinTerminal/api"
@@ -20,7 +21,14 @@ func (h *Handlers) HandleQuote(w http.ResponseWriter, r *http.Request) {
 
 	quote, err := h.client.GetQuote(symbol)
 	if err != nil {
-		h.sendError(w, http.StatusNotFound, "Failed to fetch quote: "+err.Error())
+		status := http.StatusBadGateway
+		switch {
+		case errors.Is(err, api.ErrRateLimited):
+			status = http.StatusTooManyRequests
+		case errors.Is(err, api.ErrSymbolNotFound):
+			status = http.StatusNotFound
+		}
+		h.sendError(w, status, "Failed to fetch quote: "+err.Error())
 		return
 	}
 

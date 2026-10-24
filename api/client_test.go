@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 	"testing"
 	"time"
@@ -10,21 +9,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type fakeClient struct{
+type fakeClient struct {
 	calls int
-	err error
-	mu sync.Mutex
+	err   error
+	mu    sync.Mutex
 }
 
-func (f *fakeClient) GetQuote(symbol string) (*QuoteData, error){
+func (f *fakeClient) GetQuote(symbol string) (*QuoteData, error) {
 	f.mu.Lock()
 	f.calls++
 	f.mu.Unlock()
-	if f.err != nil {return nil, f.err}
+	if f.err != nil {
+		return nil, f.err
+	}
 	return &QuoteData{Symbol: symbol, Price: 100}, nil
 }
 
-func TestCachedClientHit(t *testing.T){
+func TestCachedClientHit(t *testing.T) {
 	fake := &fakeClient{}
 	cached := NewCachedClient(fake, time.Minute)
 
@@ -34,12 +35,12 @@ func TestCachedClientHit(t *testing.T){
 	assert.Equal(t, 1, fake.calls)
 }
 
-func TestNormalization(t *testing.T){
+func TestNormalization(t *testing.T) {
 	normalized := NormalizeSymbol(" aapl ")
-	assert.Equal(t,"AAPL", normalized)
+	assert.Equal(t, "AAPL", normalized)
 }
 
-func TestExpiry(t *testing.T){
+func TestExpiry(t *testing.T) {
 	fake := &fakeClient{}
 	cached := NewCachedClient(fake, time.Millisecond)
 
@@ -53,7 +54,7 @@ func TestExpiry(t *testing.T){
 	assert.Equal(t, 2, fake.calls)
 }
 
-func TestErrorsNotCached(t *testing.T){
+func TestErrorsNotCached(t *testing.T) {
 	fake := &fakeClient{err: errors.New("BOOM")}
 	cached := NewCachedClient(fake, time.Minute)
 
@@ -63,18 +64,17 @@ func TestErrorsNotCached(t *testing.T){
 	assert.Equal(t, 2, fake.calls)
 	assert.Error(t, err)
 
-
 }
 
-func TestConcurrency(t *testing.T){
+func TestConcurrency(t *testing.T) {
 	fake := &fakeClient{}
 	cached := NewCachedClient(fake, time.Minute)
 	symbols := []string{"AAPL", "MSFT", "TSLA"}
 
 	var wg sync.WaitGroup
-	for i := 0; i < 50 ; i++ {
+	for i := 0; i < 50; i++ {
 		wg.Add(1)
-		go func(n int){
+		go func(n int) {
 			cached.GetQuote(symbols[n%len(symbols)])
 			defer wg.Done()
 		}(i)
