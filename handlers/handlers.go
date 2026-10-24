@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 )
 
 type Handlers struct {
@@ -22,6 +23,9 @@ type APIClient interface {
 func NewHandlers(apiKey string) *Handlers {
 
 	client, isDemoMode := api.NewClient(apiKey)
+	if !isDemoMode {
+		client = api.NewCachedClient(client, 5 * time.Minute)
+	}
 
 	portfolioPath := os.Getenv("FINTERMINAL_PORTFOLIO_PATH")
 	if portfolioPath == "" {
