@@ -173,3 +173,20 @@ func TestPerformanceMetricsFieldAssignment(t *testing.T) {
 	assert.Equal(t, 250.0, m.GainLoss)
 	assert.Equal(t, m.GainLossPercent, m.ReturnOnInvestment)
 }
+
+// Holdings live in a map, whose iteration order Go randomizes, so the result
+// must be sorted explicitly. Run with -count=50 to make a regression show up.
+func TestCalculatePerformanceSortedBySymbol(t *testing.T) {
+	p := NewPortfolio()
+	for _, symbol := range []string{"TSLA", "AAPL", "NVDA", "GOOGL", "MSFT"} {
+		require.NoError(t, p.AddHolding(symbol, 1, 100.00))
+	}
+
+	metrics := p.CalculatePerformance()
+
+	var symbols []string
+	for _, m := range metrics {
+		symbols = append(symbols, m.Symbol)
+	}
+	assert.Equal(t, []string{"AAPL", "GOOGL", "MSFT", "NVDA", "TSLA"}, symbols)
+}

@@ -1,5 +1,7 @@
 package portfolio
 
+import "sort"
+
 type PerformanceMetrics struct {
 	Symbol             string
 	Quantity           float64
@@ -13,7 +15,7 @@ type PerformanceMetrics struct {
 }
 
 func (p *Portfolio) CalculatePerformance() []PerformanceMetrics {
-	var metrics []PerformanceMetrics
+	metrics := make([]PerformanceMetrics, 0, len(p.Holdings))
 
 	for _, holding := range p.Holdings {
 		totalCost := holding.Quantity * holding.CostBasis
@@ -38,7 +40,9 @@ func (p *Portfolio) CalculatePerformance() []PerformanceMetrics {
 
 		metrics = append(metrics, metric)
 	}
-
+	sort.Slice(metrics, func(i, j int) bool {
+		return metrics[i].Symbol < metrics[j].Symbol
+	})
 	return metrics
 }
 
