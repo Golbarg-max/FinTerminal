@@ -18,6 +18,10 @@ func (h *Handlers) HandleQuote(w http.ResponseWriter, r *http.Request) {
 		h.sendError(w, http.StatusBadRequest, "Symbol is required")
 		return
 	}
+	if !validSymbol(symbol) {
+		h.sendError(w, http.StatusBadRequest, "Invalid symbol")
+		return
+	}
 
 	quote, err := h.client.GetQuote(symbol)
 	if err != nil {

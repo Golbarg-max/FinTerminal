@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -69,9 +70,13 @@ func (c *AlphaVantageClient) GetQuote(symbol string) (*QuoteData, error) {
 	if symbol == "" {
 		return nil, fmt.Errorf("symbol cannot be empty")
 	}
+	params := url.Values{}
+	params.Add("symbol", symbol)
+	params.Add("apikey", c.apiKey)
+	params.Add("function", "GLOBAL_QUOTE")
+	paramsEncoded := params.Encode()
 
-	params := fmt.Sprintf("?function=GLOBAL_QUOTE&symbol=%s&apikey=%s", symbol, c.apiKey)
-	resp, err := c.client.Get(BaseURL + params)
+	resp, err := c.client.Get(BaseURL + "?" + paramsEncoded)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch quote for %s: %w", symbol, err)
 	}

@@ -316,3 +316,46 @@ func TestGetQuoteNegativeValues(t *testing.T) {
 	assert.Equal(t, -10.0, quote.Change)
 	assert.Equal(t, -6.25, quote.ChangePercent)
 }
+
+// Symbols with URL-special characters must arrive as one escaped value,
+// not leak into extra query parameters.
+func TestGetQuoteEscapesSymbol(t *testing.T) {
+	tests := []struct {
+		name   string
+		symbol string
+		want   string
+	}{
+		{"ampersand injection", "aapl&function=TIME_SERIES_DAILY", "AAPL&FUNCTION=TIME_SERIES_DAILY"},
+		{"apikey injection", "AAPL&apikey=evil", "AAPL&APIKEY=EVIL"},
+		{"space", "BRK B", "BRK B"},
+		{"hash", "AAPL#x", "AAPL#X"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				q := r.URL.Query()
+				assert.Equal(t, []string{"GLOBAL_QUOTE"}, q["function"])
+				assert.Equal(t, []string{"test_key"}, q["apikey"])
+				assert.Equal(t, []string{tt.want}, q["symbol"])
+				assert.Len(t, q, 3, "unexpected extra query parameters: %v", q)
+
+				fmt.Fprint(w, `{"Global Quote": {"01. symbol": "X", "05. price": "1.00",
+					"09. change": "0.00", "10. change percent": "0.00%", "06. volume": "0"}}`)
+			}))
+			defer server.Close()
+
+			client := &AlphaVantageClient{
+				apiKey: "test_key",
+				client: &http.Client{},
+			}
+
+			oldBaseURL := BaseURL
+			BaseURL = server.URL
+			defer func() { BaseURL = oldBaseURL }()
+
+			_, err := client.GetQuote(tt.symbol)
+			require.NoError(t, err)
+		})
+	}
+}

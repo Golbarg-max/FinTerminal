@@ -88,6 +88,10 @@ func (h *Handlers) addHolding(w http.ResponseWriter, r *http.Request) {
 		h.sendError(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
+	if !validSymbol(req.Symbol) {
+		h.sendError(w, http.StatusBadRequest, "Invalid symbol")
+		return
+	}
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
