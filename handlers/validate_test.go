@@ -7,8 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"FinTerminal/api"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,14 +38,6 @@ func TestValidSymbol(t *testing.T) {
 			assert.Equal(t, tt.want, validSymbol(tt.symbol))
 		})
 	}
-}
-
-// countingClient records how many times GetQuote was called.
-type countingClient struct{ calls int }
-
-func (c *countingClient) GetQuote(symbol string) (*api.QuoteData, error) {
-	c.calls++
-	return &api.QuoteData{Symbol: symbol, Price: 1}, nil
 }
 
 func TestHandleQuoteRejectsInvalidSymbol(t *testing.T) {
