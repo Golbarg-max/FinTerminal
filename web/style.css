@@ -224,6 +224,59 @@ body {
 	border-bottom-color: var(--accent);
 }
 
+.btn {
+	padding: var(--spacing-md) var(--spacing-lg);
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-size: var(--font-size-base);
+	color: var(--text-secondary);
+	font-weight: 500;
+	transition: all 0.3s ease;
+	border-radius: var(--radius-md);
+	display: inline-flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	white-space: nowrap;
+}
+
+.btn-danger {
+	padding: var(--spacing-md) var(--spacing-lg);
+	border: none;
+	background: var(--danger);
+	cursor: pointer;
+	font-size: var(--font-size-base);
+	color: white;
+	font-weight: 500;
+	transition: all 0.3s ease;
+	border-radius: var(--radius-md);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	white-space: nowrap;
+}
+
+.btn-refresh {
+	padding: var(--spacing-md) var(--spacing-lg);
+	border: none;
+	background: white;
+	cursor: pointer;
+	font-size: var(--font-size-base);
+	color: var(--primary);
+	font-weight: 500;
+	transition: all 0.3s ease;
+	border-radius: var(--radius-md);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	white-space: nowrap;
+}
+
+.btn-primary {
+	background: var(--accent);
+	color: white;
+}
+
 .tab-icon {
 	font-size: var(--font-size-lg);
 }
@@ -310,6 +363,11 @@ body {
 	border-bottom: 1px solid var(--border);
 }
 
+.table .btn {
+	padding: var(--spacing-xs) var(--spacing-sm);
+	font-size: var(--font-size-sm);
+}
+
 .table tbody tr:hover {
 	background: var(--bg-light);
 }
@@ -329,4 +387,87 @@ body {
 	background: var(--bg-card);
 	padding: var(--spacing-xl);
 	border-radius: var(--radius-lg);
-	box-shadow:
+	box-shadow: var(--shadow-sm);
+	border: 1px solid var(--border);
+	max-width: 480px;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-lg);
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+}
+
+.form-label {
+	font-size: var(--font-size-sm);
+	color: var(--text-secondary);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-weight: 600;
+}
+
+.input {
+	font-family: inherit;
+	font-size: var(--font-size-base);
+	color: var(--text-primary);
+	padding: var(--spacing-sm) var(--spacing-md);
+	background: var(--bg-light);
+	border: 1px solid var(--border);
+	border-left: 3px solid var(--border);
+	border-radius: var(--radius-md);
+	transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input::placeholder {
+	color: #94a3b8;
+}
+
+.input:hover {
+	border-left-color: var(--secondary);
+}
+
+.input:focus {
+	outline: none;
+	background: var(--bg-card);
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px rgb(59 130 246 / 0.15);
+}
+
+.form .btn {
+	align-self: flex-start;
+}
+
+/* ============ TOAST ============ */
+.toast {
+	position: fixed;
+	bottom: var(--spacing-xl);
+	right: var(--spacing-xl);
+	max-width: 360px;
+	padding: var(--spacing-md) var(--spacing-lg);
+	border-radius: var(--radius-md);
+	background: var(--primary);
+	color: white;
+	font-weight: 500;
+	box-shadow: var(--shadow-lg);
+	opacity: 0;
+	transform: translateY(10px);
+	pointer-events: none;
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	z-index: 1000;
+}
+
+.toast.show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.toast.success {
+	background: var(--success);
+}
+
+.toast.error {
+	background: var(--danger);
+}
