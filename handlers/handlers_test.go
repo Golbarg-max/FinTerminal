@@ -31,11 +31,11 @@ func do(t *testing.T, handler http.HandlerFunc, method string, target string, bo
 	return rec
 }
 
-
 func newTestHandlers(t *testing.T) *Handlers {
+	t.Helper();
 	client := &countingClient{}
 	h := &Handlers{
-		client: client,
+		client:        client,
 		portfolioPath: filepath.Join(t.TempDir(), "portfolio.json"),
 	}
 	return h
