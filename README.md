@@ -1,16 +1,8 @@
-# FinTerminal 📊
+# FinTerminal 
 
 A Bloomberg-inspired live market data terminal built in Go. Track your stock portfolio and view real-time market data from the command line.
 
-## Features
-
-✨ **Real-Time Stock Quotes** - Fetch current market data for any symbol
-💼 **Portfolio Management** - Track holdings and calculate performance
-📈 **Performance Metrics** - View gain/loss, ROI, and portfolio totals
-🎨 **Bloomberg-Style Tables** - Professional formatted output with color coding
-⚡ **Fast & Lightweight** - Native Go binary, minimal dependencies
-
-## Quick Start
+## Set up
 
 ### 1. Get an API Key
 
@@ -23,7 +15,7 @@ Free tier includes:
 
 ### 2. Set Your API Key
 
-**Option A: Using .env file (easiest)** ⭐
+**Option A: Using .env file (easiest)** 
 
 ```bash
 cp .env.example .env
@@ -253,28 +245,3 @@ export ALPHA_VANTAGE_API_KEY="your_api_key"
 - API calls are cached in portfolio file
 - Prices update when you run `portfolio` command
 
-## Contributing
-
-Contributions welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Author
-
-Built with ❤️ by the FinTerminal community
-
-## Support
-
-- 📧 Email: support@finterminal.dev
-- 🐛 Issues: github.com/yourusername/FinTerminal/issues
-- 💬 Discussions: github.com/yourusername/FinTerminal/discussions
-
----
-
-**Disclaimer:** This tool is for informational purposes. Not financial advice. Always do your own research before investing.
